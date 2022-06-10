@@ -1,1 +1,1 @@
-web: gunicorn similMercado.wsgi
+web: gunicorn clima_arq2.wsgi
