@@ -1,6 +1,6 @@
-from django.apps import AppConfig
+from django.contrib import admin
 
+from clima.models import Clima
 
-class ClimaConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'clima'
+# Register your models here.
+admin.site.register(Clima)
