@@ -24,3 +24,4 @@ fastapi==0.59.0                 # Framework web
 #uvicorn==0.11.5                 # Servidor
 psycopg2-binary~=2.8.6
 requests==2.28.0
+schedule==1.1.0
