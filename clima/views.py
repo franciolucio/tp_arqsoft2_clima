@@ -1,5 +1,6 @@
 # # Create your views here.
 
+from clima.src.main import startScriptMain, stopScriptMain
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -10,9 +11,20 @@ from rest_framework import status
 from django.http import Http404
 from django.shortcuts import render
 
+runScript = False
 
 def index(request):
-    return render(request,"clima/index.html")
+    return render(request,"clima/index.html", {"runScript": runScript})
+
+def stopScript(request):
+	runScript = False
+	stopScriptMain()
+	return render(request, "clima/index.html", {"runScript": runScript})
+
+def startScript(request):
+	runScript = True
+	startScriptMain() # En un thread
+	return render(request, "clima/index.html", {"runScript": runScript})
 
 class Clima_APIView(APIView):
 	def get(self, request, format=None, *args, **kwargs):

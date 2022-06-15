@@ -1,19 +1,17 @@
 import requests
-from pprint import pprint
-
 import psycopg2
 from psycopg2 import Error
-
 import time
 
 
-runScript = True
+runScript = False
 
 city = 'Quilmes'
 url = 'http://api.openweathermap.org/data/2.5/weather?q={}&appid=21742993dd2295b184e94eb224c464dd&units=metric&lang=es'.format(city)
 
 
-def startScript():
+def startScriptMain():
+    runScript = True
     try:
         # Connect to an existing database
         connection = psycopg2.connect(user="dvjjaqjjtprbra",
@@ -34,7 +32,7 @@ def startScript():
             longitude = data['coord']['lon']
             description = data['weather'][0]['description']
 
-            cursor.execute("INSERT INTO clima (temperature, latitude, longitude, description) VALUES (%s, %s, %s, %s)", (temp, latitude, longitude, description))
+            cursor.execute("INSERT INTO clima_clima (temperature, latitude, longitude, description) VALUES (%s, %s, %s, %s)", (temp, latitude, longitude, description))
 
             connection.commit()
 
@@ -48,5 +46,5 @@ def startScript():
             connection.close()
 
 
-def stopScript():
+def stopScriptMain():
     runScript = False
