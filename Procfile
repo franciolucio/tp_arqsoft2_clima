@@ -1,3 +1,3 @@
 web: gunicorn clima_arq2.wsgi
 
-worker: python clima.src.scripts.uploadWeatherInfoToDB.py
+worker: python clima/src/scripts/uploadWeatherInfoToDB.py
