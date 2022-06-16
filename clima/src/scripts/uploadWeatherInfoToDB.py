@@ -1,8 +1,9 @@
+from clima.src.components.WeatherLoaderComponent import uploadWeatherInfoToDB
 import schedule
 import time
 
 def job():
-    print('Hello Word!!!')
+    uploadWeatherInfoToDB()
             
 schedule.every(1).minutes.at(":00").do(job)
 
