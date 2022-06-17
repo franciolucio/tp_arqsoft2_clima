@@ -5,7 +5,7 @@ import time
 def job():
     uploadWeatherInfoToDB()
             
-schedule.every(1).hour.at(":00:00").do(job)
+schedule.every().hour.at(":00:00").do(job)
 
 while True:
     schedule.run_pending()
