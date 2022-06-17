@@ -1,6 +1,7 @@
 # # Create your views here.
 
 from clima.src.components.WeatherMetricsComponent import getCurrentWeatherEndpoint, getLastDayWeatherEndpoint, getLastWeekWeatherEndpoint
+from clima.src.scripts.uploadWeatherInfoToDB import runScipt
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -75,3 +76,12 @@ class WeatherLastWeek_APIView(APIView):
 	def get(self, request, format=None, *args, **kwargs):
 		lastWeekWeather = getLastWeekWeatherEndpoint()
 		return Response(lastWeekWeather)
+
+
+class UploadWeatherInfo_APIView(APIView):
+    
+	def get(self, request, it, sec, format=None, *args, **kwargs):
+		iterations = it
+		seconds = sec
+		script = runScipt(iterations, seconds)
+		return Response(script)
