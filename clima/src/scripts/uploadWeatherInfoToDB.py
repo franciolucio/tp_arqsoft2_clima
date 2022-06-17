@@ -6,7 +6,7 @@ import time
 def runScipt(it, sec):
     print("<<< Start Scipt >>>")
     iterations = it
-    seconds = sec-1
+    seconds = sec - 1 # El -1 es para ajustar el tiempo de carga por lo que tarda ejecutar en local
     current = 0
     print("Iterations:", iterations, "/ Time:", seconds, "seconds")
 
