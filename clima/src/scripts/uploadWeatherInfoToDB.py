@@ -6,7 +6,7 @@ import time
 def runScipt(it, sec):
     print("<<< Start Scipt >>>")
     iterations = it
-    seconds = sec - 1 # El -1 es para ajustar el tiempo de carga por lo que tarda ejecutar en local
+    seconds = sec
     current = 0
     print("Iterations:", iterations, "/ Time:", seconds, "seconds")
 
@@ -14,7 +14,7 @@ def runScipt(it, sec):
         uploadWeatherInfoToDB()
         current = current + 1
         print("Iteration", current, "de", iterations)
-        time.sleep(seconds)
+        time.sleep(seconds-1)                                    # El -1 es para ajustar el tiempo de carga por lo que tarda ejecutar en local
 
     print("<<< End Scipt >>>")
     return "<<< End Scipt >>>"
