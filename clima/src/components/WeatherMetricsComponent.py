@@ -1,10 +1,12 @@
 from clima.src.components.WeatherLoaderComponent import getCurrentWeather, getLastDayWeather, getLastWeekWeather
-
+import requests
 
 def getCurrentWeatherEndpoint():
-    currentWeather = getCurrentWeather()
-    return currentWeather["temperature"]
-
+    try:
+        currentWeather = getCurrentWeather()
+        return currentWeather["temperature"]
+    except requests.exceptions.Timeout:
+        print('TIME OUT !!!!')
 
 def getLastDayWeatherEndpoint():
     lastDayWeather = getLastDayWeather()

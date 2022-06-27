@@ -1,5 +1,6 @@
 import requests
 import psycopg2
+import time
 from psycopg2 import Error
 from datetime import datetime
 from datetime import timedelta 
@@ -7,14 +8,14 @@ from datetime import timedelta
 
 city = 'Quilmes'
 url = 'http://api.openweathermap.org/data/2.5/weather?q={}&appid=21742993dd2295b184e94eb224c464dd&units=metric&lang=es'.format(city)
-
+# https://httpbin.org/delay/10
 
 def setCity(cityName):
-   city = cityName
+    city = cityName
 
 
 def getCurrentWeather():
-    res = requests.get(url)
+    res = requests.get(url,timeout=5)
     data = res.json()
 
     currentWeather = {
@@ -23,8 +24,9 @@ def getCurrentWeather():
         "longitude": data['coord']['lon'],
         "description": data['weather'][0]['description']
     }
+    now = time.ctime(int(time.time()))
+    print ("Time: {0} / Used Cache: {1}".format(now, res.from_cache))
     return currentWeather
-
 
 def getLastDaysWeather(number_of_days):
     try:
