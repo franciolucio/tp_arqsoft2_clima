@@ -1,20 +1,25 @@
 from clima.src.components.WeatherLoaderComponent import getCurrentWeather, getLastDayWeather, getLastWeekWeather
-import requests
+
 
 def getCurrentWeatherEndpoint():
-    try:
-        currentWeather = getCurrentWeather()
-        return currentWeather["temperature"]
-    except requests.exceptions.Timeout:
-        print('TIME OUT !!!!')
+    currentWeather = getCurrentWeather()
+    if currentWeather:
+        return currentWeather
+    else:
+        return "An unexpected error has occurred, please try again"
+
 
 def getLastDayWeatherEndpoint():
     lastDayWeather = getLastDayWeather()
-    promLastDayWeather = lastDayWeather  # Hacer el calculo del promedio de la temperatura del ultimo dia
-    return promLastDayWeather
+    if lastDayWeather:
+        return lastDayWeather
+    else:
+        return "An unexpected error has occurred, please try again"
 
 
 def getLastWeekWeatherEndpoint():
     lastWeekWeather = getLastWeekWeather()
-    promLastWeekWeather = lastWeekWeather     # Hacer el calculo del promedio de la temperatura de la ultima semana
-    return promLastWeekWeather
+    if lastWeekWeather:
+        return lastWeekWeather
+    else:
+        return "An unexpected error has occurred, please try again"

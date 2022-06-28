@@ -24,7 +24,7 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = 'django-insecure-mxq+!&z6g4o(hj0fmwb*u3b@jn0+zb-ednh@_nb3()umu)!w@m'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -116,3 +116,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT =  os.path.join(BASE_DIR, 'staticfiles')
+
+
+# Logging
+
+import logging
+
+logging.basicConfig(
+    filename = 'weather.log',
+    format = '%(asctime)s - %(levelname)s: %(message)s', 
+    datefmt = '%d/%m/%Y %I:%M:%S', 
+    level = logging.WARNING
+)
