@@ -8,7 +8,7 @@ import logging
 
 
 city = 'Quilmes'
-urlWeather = 'http://api.openweathermap.org/data/2.5/weather?q={}&appid=21742993dd2295b184e94eb224c464dd&units=metric&lang=es'.format(city)
+urlWeather = 'http://api.openweathermap.org/data/2.5/weather?q={}&appid=c6ecd910b5125a8c931043268c18fd50&units=metric&lang=es'.format(city)
 urlPruebas = 'https://httpbin.org/delay/10'
 url = urlWeather
 

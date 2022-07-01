@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'atatus.contrib.django',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,14 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+ATATUS = {
+    'APP_NAME': 'clima',
+    'LICENSE_KEY': 'lic_apm_fbf448f78fc44233a40526930b002e92',
+    'ANALYTICS': True,
+    'DEBUG': True  # Please uncomment this line if you are running in development/debug mode. Otherwise, we do not send data.
+}
+
 
 ROOT_URLCONF = 'clima.urls'
 
