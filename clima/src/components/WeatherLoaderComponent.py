@@ -1,6 +1,6 @@
+from retry import retry
 import requests
 import psycopg2
-import time
 from psycopg2 import Error
 from datetime import datetime
 from datetime import timedelta
@@ -17,21 +17,28 @@ def setCity(cityName):
     city = cityName
 
 
+@retry(exceptions = (Exception, Error, requests.exceptions.Timeout), delay = 3, tries = 2)
+def getCurrentWeatherFromAPI():
+    res = requests.get(url, timeout = 5)
+    data = res.json()
+
+    currentWeather = {
+        "temperature": data['main']['temp'],
+        "latitude": data['coord']['lat'],
+        "longitude": data['coord']['lon'],
+        "description": data['weather'][0]['description']
+    }
+
+    logging.info("GET /currentWeather: Used Cache: {0}".format(res.from_cache))
+
+    return currentWeather
+
+
 def getCurrentWeather():
     try:
-        res = requests.get(url, timeout = 5)
-        data = res.json()
+        currentWeather = getCurrentWeatherFromAPI()
 
-        currentWeather = {
-            "temperature": data['main']['temp'],
-            "latitude": data['coord']['lat'],
-            "longitude": data['coord']['lon'],
-            "description": data['weather'][0]['description']
-        }
-        now = time.ctime(int(time.time()))
-        logging.info("Time: {0} / Used Cache: {1}".format(now, res.from_cache))
-
-    except requests.exceptions.Timeout:
+    except requests.exceptions.Timeout as error:
         logging.warning('GET /currentWeather: Timeout Exception')
         last_weather = getLastWeather()
         return last_weather
@@ -126,7 +133,7 @@ def getLastWeekWeather():
 
 def uploadWeatherInfoToDB():
     try:
-        currentWeather = getCurrentWeather()
+        currentWeather = getCurrentWeatherFromAPI()
 
         # Connect to an existing database
         connection = psycopg2.connect(
@@ -146,6 +153,10 @@ def uploadWeatherInfoToDB():
         )
 
         connection.commit()
+
+    except requests.exceptions.Timeout as error:
+        logging.warning('POST /runScript: Timeout Exception')
+        return False
 
     except (Exception, Error) as error:
         logging.error('POST /runScript: ' + str(error))
