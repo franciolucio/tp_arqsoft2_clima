@@ -1,7 +1,7 @@
 from .base import *
 import os
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['clima-arq2.herokuapp.com']
 

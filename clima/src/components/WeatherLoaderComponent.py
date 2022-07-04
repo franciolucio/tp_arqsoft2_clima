@@ -5,6 +5,7 @@ from psycopg2 import Error
 from datetime import datetime
 from datetime import timedelta
 import logging
+from django_request_cache import cache_for_request
 
 
 city = 'Quilmes'
@@ -17,7 +18,24 @@ def setCity(cityName):
     city = cityName
 
 
-@retry(exceptions = (Exception, Error, requests.exceptions.Timeout), delay = 3, tries = 2)
+def getCurrentWeather():
+    try:
+        currentWeather = getCurrentWeatherFromAPI()
+
+    except requests.exceptions.Timeout as error:
+        logging.warning('GET /currentWeather (API): Timeout Exception')
+        last_weather = getLastWeather()
+        return last_weather
+
+    except (Exception, Error) as error:
+        logging.warning('GET /currentWeather (API): ' + str(error))
+        last_weather = getLastWeather()
+        return last_weather
+
+    return currentWeather['temperature']
+
+
+@retry(delay = 3, tries = 2)
 def getCurrentWeatherFromAPI():
     res = requests.get(url, timeout = 5)
     data = res.json()
@@ -34,24 +52,18 @@ def getCurrentWeatherFromAPI():
     return currentWeather
 
 
-def getCurrentWeather():
-    try:
-        currentWeather = getCurrentWeatherFromAPI()
-
-    except requests.exceptions.Timeout as error:
-        logging.warning('GET /currentWeather: Timeout Exception')
-        last_weather = getLastWeather()
-        return last_weather
-
-    except (Exception, Error) as error:
-        logging.error('GET /currentWeather: ' + str(error))
-        last_weather = getLastWeather()
-        return last_weather
-    
-    return currentWeather['temperature']
-
-
+@cache_for_request
 def getLastWeather():
+    try:
+        return getLastWeatherFromDB()
+    except:
+        logging.error('GET /currentWeather: Can not send response')
+        return False
+
+
+@retry(delay = 1, tries = 2)
+def getLastWeatherFromDB():
+    connection = False
     try:
         # Connect to an existing database
         connection = psycopg2.connect(
@@ -73,18 +85,40 @@ def getLastWeather():
         record = cursor.fetchone()
 
     except (Exception, Error) as error:
-        logging.error('GET /currentWeather: ' + str(error))
-        return False
+        logging.warning('GET /currentWeather (DB): ' + str(error))
+        raise
 
     finally:
-        if (connection):
+        if connection:
             cursor.close()
             connection.close()
 
     return record[0]
 
 
-def getLastDaysWeather(number_of_days):
+def getLastDayWeather():
+    try:
+        lastDaysWeather = getLastDaysWeatherFromDB(1)
+        return lastDaysWeather
+    except:
+        logging.error('GET /lastDayWeather: Can not send response')
+        return False
+
+
+def getLastWeekWeather():
+    try:
+        lastWeekWeather = getLastDaysWeatherFromDB(7)
+        return lastWeekWeather
+    except  (Exception, Error) as error:
+        logging.error('GET /lastWeekWeather: Can not send response')
+        return False
+
+
+@cache_for_request
+@retry(delay = 1, tries = 2)
+def getLastDaysWeatherFromDB(number_of_days):
+
+    connection = False
     try:
         yesterday = datetime.now() - timedelta(days = number_of_days)
         date = yesterday.strftime("%Y/%m/%d %H:%M:%S")
@@ -112,26 +146,20 @@ def getLastDaysWeather(number_of_days):
         lastDayWeather = record[0] / record[1]
 
     except (Exception, Error) as error:
-        logging.error('getLastDaysWeather(' + str(number_of_days) + '): ' + str(error))
-        return False
+        logging.warning('getLastDaysWeather(' + str(number_of_days) + '): ' + str(error))
+        raise
 
     finally:
-        if (connection):
+        if connection:
             cursor.close()
             connection.close()
 
     return round(lastDayWeather, 2)
 
 
-def getLastDayWeather():
-    return getLastDaysWeather(1)
-
-
-def getLastWeekWeather():
-    return getLastDaysWeather(7)
-
-
 def uploadWeatherInfoToDB():
+
+    connection = False
     try:
         currentWeather = getCurrentWeatherFromAPI()
 
@@ -163,6 +191,6 @@ def uploadWeatherInfoToDB():
         return False
 
     finally:
-        if (connection):
+        if connection:
             cursor.close()
             connection.close()
