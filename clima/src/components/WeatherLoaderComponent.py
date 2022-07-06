@@ -5,7 +5,6 @@ from psycopg2 import Error
 from datetime import datetime
 from datetime import timedelta
 import logging
-from django_request_cache import cache_for_request
 
 
 city = 'Quilmes'
@@ -52,7 +51,6 @@ def getCurrentWeatherFromAPI():
     return currentWeather
 
 
-@cache_for_request
 def getLastWeather():
     try:
         return getLastWeatherFromDB()
@@ -114,7 +112,6 @@ def getLastWeekWeather():
         return False
 
 
-@cache_for_request
 @retry(delay = 1, tries = 2)
 def getLastDaysWeatherFromDB(number_of_days):
 
