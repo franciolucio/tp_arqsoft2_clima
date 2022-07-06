@@ -57,8 +57,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_userforeignkey.middleware.UserForeignKeyMiddleware' , 
-    'django_request_cache.middleware.RequestCacheMiddleware' , 
 ]
 
 ATATUS = {
@@ -135,7 +133,7 @@ import logging
 
 logging.basicConfig(
     filename = 'weather.log',
-    format = '%(asctime)s - %(levelname)s: %(message)s', 
-    datefmt = '%d/%m/%Y %I:%M:%S', 
+    format = '%(asctime)s - %(levelname)s: %(message)s',
+    datefmt = '%d/%m/%Y %I:%M:%S',
     level = logging.WARNING
 )
